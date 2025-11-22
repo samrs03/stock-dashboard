@@ -5,8 +5,7 @@ import './index.css';
 import App from './App';
 import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
-import { customTheme } from './ui';
-import { initializeWs } from './bff';
+import { customTheme, store } from './ui';
 
 const rootElement = document.getElementById('root');
 
@@ -14,7 +13,7 @@ if (!rootElement) {
   throw new Error('Failed to initialized root element');
 }
 
-initializeWs();
+store.initializeStore();
 
 createRoot(rootElement).render(
   <React.StrictMode>

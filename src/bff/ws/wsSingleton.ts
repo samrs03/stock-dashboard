@@ -1,39 +1,52 @@
+import { EWsStatus, IStock } from '../../ui';
+import { webSocketDataMapper } from '../../utils';
+
+// volver a revisar variables de ambiente
+
+export type WsUpdateCallback = (data: Map<string, IStock>) => void;
+export type StatusUpdateCallback = (status: EWsStatus) => void;
+
 let ws: WebSocket | null = null;
-// const apiKey = import.meta.env.VITE_API_KEY;
-// const wsBaseUrl = import.meta.env.VITE_WS_BASE_URL;
+let updateCallback: WsUpdateCallback | null = null;
+let statusCallback: StatusUpdateCallback | null = null;
 
-export const initializeWs = (): void => {
-  //   if (!apiKey || !wsBaseUrl) {
-  //     throw new Error('Env variables not initialized');
-  //   }
+export const initializeWs = (
+  onUpdate: WsUpdateCallback,
+  onStatusChange: StatusUpdateCallback,
+): void => {
+  if (ws) return;
 
-  //   const wsUrl = `${wsBaseUrl}?token=${apiKey}`;
   const wsUrl =
     'wss://ws.finnhub.io?token=d4g7gchr01qm5b349gt0d4g7gchr01qm5b349gtg';
 
   ws = new WebSocket(wsUrl);
 
-  ws.onopen = () => {
-    console.log('open');
-    handleSubscriptionEvent('subscribe', 'BINANCE:BTCUSDT');
-  };
+  updateCallback = onUpdate;
+  statusCallback = onStatusChange;
 
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log(data);
+  ws.onopen = () => {
+    statusCallback && statusCallback(EWsStatus.CONNECTED);
   };
 
   ws.onclose = () => {
-    console.log('close');
+    statusCallback && statusCallback(EWsStatus.DISCONNECTED);
   };
 
   ws.onerror = () => {
-    console.log('error');
+    statusCallback && statusCallback(EWsStatus.ERROR);
+  };
+
+  ws.onmessage = (event) => {
+    if (event.type === 'trade' && event.data) {
+      const parsedEvent = JSON.parse(event.data);
+      const data = webSocketDataMapper(parsedEvent);
+      updateCallback && updateCallback(data);
+    }
   };
 };
 
 export const handleSubscriptionEvent = (
-  type: 'subscribe' | 'unsuscribe',
+  type: 'subscribe' | 'unsubscribe',
   symbol: string,
 ): void => {
   if (ws && ws.readyState === WebSocket.OPEN) {
@@ -46,6 +59,5 @@ export const closeWs = () => {
   if (ws && ws.readyState === WebSocket.OPEN) {
     ws.close();
     ws = null;
-    console.log('closed');
   }
 };
