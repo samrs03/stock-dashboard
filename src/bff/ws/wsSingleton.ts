@@ -15,10 +15,37 @@ export const initializeWs = (): void => {
 
   ws.onopen = () => {
     console.log('open');
+    handleSubscriptionEvent('subscribe', 'BINANCE:BTCUSDT');
   };
 
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
     console.log(data);
   };
+
+  ws.onclose = () => {
+    console.log('close');
+  };
+
+  ws.onerror = () => {
+    console.log('error');
+  };
+};
+
+export const handleSubscriptionEvent = (
+  type: 'subscribe' | 'unsuscribe',
+  symbol: string,
+): void => {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    const message = JSON.stringify({ type, symbol });
+    ws.send(message);
+  }
+};
+
+export const closeWs = () => {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.close();
+    ws = null;
+    console.log('closed');
+  }
 };
