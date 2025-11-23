@@ -7,6 +7,7 @@ import {
   MenuItem,
   TextField,
   Button,
+  useTheme,
 } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { IWatchedStock, STOCK_ELEMENTS, useStockStore } from '../../store';
@@ -14,7 +15,8 @@ import AddIcon from '@mui/icons-material/Add';
 
 export type TStockForm = Pick<IWatchedStock, 'symbol' | 'alertPrice' | 'name'>;
 
-export const StockForm: React.FC = () => {
+export const StockFormComponent: React.FC = () => {
+  const theme = useTheme();
   const {
     control,
     handleSubmit,
@@ -41,8 +43,6 @@ export const StockForm: React.FC = () => {
 
     addStock(symbol, alertPrice, name);
 
-    // should i reset ?
-
     reset({
       symbol: '',
       alertPrice: 0,
@@ -50,27 +50,38 @@ export const StockForm: React.FC = () => {
   };
 
   return (
-    <Paper elevation={3}>
-      <Typography variant="h5">Añadir Activo a Watchlist</Typography>
+    <Paper elevation={3} sx={{ p: 3, bgcolor: theme.palette.background.paper }}>
+      <Typography variant="h5" sx={{ mb: 3 }}>
+        Add Symbol to Watch list
+      </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <FormControl fullWidth size="small">
+        <FormControl fullWidth size="small" sx={{ mb: 2 }}>
           <InputLabel id="symbol-select-label">
-            Símbolo (Stock / Cripto)
+            Symbol (Stock / Cripto)
           </InputLabel>
           <Controller
             name="symbol"
             control={control}
-            rules={{ required: 'Debe seleccionar un símbolo' }}
+            rules={{ required: 'A symbol must be selected' }}
             render={({ field }) => (
               <Select
                 {...field}
                 labelId="symbol-select-label"
-                label="Símbolo (Stock / Cripto)"
-                MenuProps={{ PaperProps: { sx: { bgcolor: 'rgb(31 41 55)' } } }}
+                label="Symbol (Stock / Cripto)"
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      bgcolor: theme.palette.background.paper,
+
+                      boxShadow: theme.shadows[6],
+                      border: '1px solid ' + theme.palette.divider,
+                    },
+                  },
+                }}
               >
                 <MenuItem value="" disabled>
-                  <em style={{ color: 'rgb(156 163 175)' }}>
-                    Seleccione un símbolo
+                  <em style={{ color: theme.palette.text.secondary }}>
+                    Select a symbol
                   </em>
                 </MenuItem>
                 {STOCK_ELEMENTS.map((s) => (
@@ -83,7 +94,7 @@ export const StockForm: React.FC = () => {
           />
         </FormControl>
         {errors.symbol && (
-          <Typography variant="caption" color="error">
+          <Typography variant="caption" color="error" sx={{ mb: 2 }}>
             {errors.symbol.message}
           </Typography>
         )}
@@ -93,12 +104,13 @@ export const StockForm: React.FC = () => {
           render={({ field, fieldState }) => (
             <TextField
               {...field}
-              label="Alerta de Precio (Opcional)"
+              label="Price Alert (Optional)"
               type="number"
               fullWidth
               size="small"
               helperText={fieldState.error?.message}
               error={!!fieldState.error}
+              sx={{ mb: 3 }}
             />
           )}
         />
@@ -108,7 +120,7 @@ export const StockForm: React.FC = () => {
           fullWidth
           startIcon={<AddIcon />}
         >
-          Suscribirse y Añadir
+          Subscribe
         </Button>
       </form>
     </Paper>

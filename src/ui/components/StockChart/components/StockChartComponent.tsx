@@ -3,12 +3,10 @@ import { Typography, Box } from '@mui/material';
 import Chart from 'chart.js/auto';
 import { IWatchedStock } from '../../../store';
 
-interface SingleStockChartProps {
-  stock: IWatchedStock;
-}
-
-const SingleStockChartContent: React.FC<SingleStockChartProps> = ({
-  stock,
+const StockChartContainer: React.FC<IWatchedStock> = ({
+  name,
+  symbol,
+  price,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartInstanceRef = useRef<Chart | null>(null);
@@ -26,7 +24,7 @@ const SingleStockChartContent: React.FC<SingleStockChartProps> = ({
         labels: [],
         datasets: [
           {
-            label: `${stock.name} Precio`,
+            label: `${name} Precio`,
             data: [],
             borderColor: '#4f46e5',
             tension: 0.1,
@@ -54,16 +52,16 @@ const SingleStockChartContent: React.FC<SingleStockChartProps> = ({
         chartInstanceRef.current.destroy();
       }
     };
-  }, [stock.symbol, stock.name]);
+  }, [symbol, name]);
 
   useEffect(() => {
-    if (chartInstanceRef.current && stock.price > 0) {
+    if (chartInstanceRef.current && price > 0) {
       const chart = chartInstanceRef.current;
       const now = new Date();
       const timeLabel = now.toLocaleTimeString();
 
       chart.data.labels!.push(timeLabel);
-      chart.data.datasets[0].data.push(stock.price);
+      chart.data.datasets[0].data.push(price);
 
       const maxPoints = 20;
       if (chart.data.labels!.length > maxPoints) {
@@ -73,7 +71,7 @@ const SingleStockChartContent: React.FC<SingleStockChartProps> = ({
 
       chart.update('none');
     }
-  }, [stock.price]);
+  }, [price]);
 
   return (
     <Box
@@ -86,7 +84,7 @@ const SingleStockChartContent: React.FC<SingleStockChartProps> = ({
       }}
     >
       <Typography variant="subtitle1" sx={{ color: 'white' }}>
-        {stock.name} ({stock.symbol}) - ${stock.price.toFixed(2)}
+        {name} ({symbol}) - ${price.toFixed(2)}
       </Typography>
       <Box sx={{ height: 'calc(100% - 24px)' }}>
         <canvas ref={canvasRef} />
@@ -95,4 +93,4 @@ const SingleStockChartContent: React.FC<SingleStockChartProps> = ({
   );
 };
 
-export const SingleStockChart = memo(SingleStockChartContent);
+export const StockChartComponent = memo(StockChartContainer);

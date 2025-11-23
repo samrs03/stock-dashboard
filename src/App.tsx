@@ -1,30 +1,84 @@
-import { Box, Container, Grid, Typography } from '@mui/material';
-import './App.css';
-import { StockForm, StockChartsContainer } from './ui';
+import React from 'react';
+import { Box, AppBar, Typography, useTheme } from '@mui/material';
+import {
+  StockChartsComponent,
+  StockFormComponent,
+  TopCardsComponent,
+} from './ui';
 
-function App() {
+const App = () => {
+  const theme = useTheme();
+
   return (
     <Box
       sx={{
-        minHeight: '100vh',
-        bgcolor: 'rgb(17 24 39)',
-        p: 4,
-        fontFamily: 'Inter, sans-serif',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh',
+        width: '100vw',
+        backgroundColor: theme.palette.background.default,
       }}
     >
-      <Container maxWidth="xl">
-        {/* <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <PriceSummaryBar />
-          </Grid>
-        </Grid> */}
-        <Grid container spacing={3} sx={{ height: '75vh' }}>
-          <Grid component={StockForm} />
-          <Grid component={StockChartsContainer} />
-        </Grid>
-      </Container>
+      <AppBar
+        position="static"
+        color="primary"
+        elevation={3}
+        sx={{
+          minHeight: '96px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          padding: '0 24px',
+        }}
+      >
+        <TopCardsComponent />
+      </AppBar>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          width: '100%',
+          backgroundColor: theme.palette.background.paper,
+
+          display: 'flex',
+          gap: 3,
+          p: 3,
+          overflow: 'auto',
+        }}
+      >
+        <Box
+          sx={{
+            flex: 1,
+            minWidth: 0,
+            height: '100%',
+
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            p: 2,
+          }}
+        >
+          <Box
+            sx={{
+              width: '65%',
+            }}
+          >
+            <StockFormComponent />
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            flex: 1,
+            minWidth: 0,
+            height: '100%',
+            p: 2,
+          }}
+        >
+          <StockChartsComponent />
+        </Box>
+      </Box>
     </Box>
   );
-}
+};
 
 export default App;

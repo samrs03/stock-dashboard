@@ -8,6 +8,7 @@ export interface IWatchedStock extends IStock {
   changePercent: number;
   alertPrice: number;
   name: string;
+  initialPrice: number;
 }
 
 export enum EWsStatus {

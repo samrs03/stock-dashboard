@@ -1,1 +1,1 @@
-export * from './SingleStockChart';
+export * from './StockChartComponent';

@@ -30,53 +30,35 @@ export const useStockStore = create<TStockStore>((set, get) => ({
         return state;
       }
       const watchedStocks = state.watchedStocks;
-      /// asegurarse que solo watched stocks son parseads, quiza una verificacion
+
       for (const [symbol, stockData] of data) {
         const existingStock = state.watchedStocks[symbol];
-        if (!existingStock) {
+        if (!existingStock || existingStock.timestamp >= stockData.timestamp) {
           console.warn(`Symbol ${symbol} received but not subscribed to`);
           continue;
         }
+
+        const previousPrice = existingStock.initialPrice;
+
+        const newChangePercent = calculateChangePercent(
+          stockData.price,
+          previousPrice,
+        );
 
         if (existingStock.timestamp < stockData.timestamp) {
           watchedStocks[symbol] = {
             ...existingStock,
             price: stockData.price,
             timestamp: stockData.timestamp,
+            changePercent: newChangePercent,
+            initialPrice:
+              existingStock.initialPrice === 0
+                ? stockData.price
+                : existingStock.initialPrice,
           };
         }
-
-        // when ui is ready lets bakc to this an calculate {appropiate percent change, for now it will be defualt to 0
       }
       return { watchedStocks };
-
-      // data.forEach (()=>)
-      //   const existingStock = state.watchedStocks[symbol];
-
-      //   if (!existingStock) {
-      //     return state;
-      //   }
-
-      //   const previousPrice =
-      //     existingStock.price !== 0 ? existingStock.price : price;
-
-      //   const newChangePercent = calculateChangePercent(price, previousPrice);
-
-      //   if (price >= existingStock.alertPrice && existingStock.alertPrice > 0) {
-      //     console.warn('Alert the stock reached the alert price ');
-      //   }
-
-      //   return {
-      //     watchedStocks: {
-      //       ...state.watchedStocks,
-      //       [symbol]: {
-      //         ...existingStock,
-      //         price: price,
-      //         changePercent: newChangePercent,
-      //       },
-      //     },
-      //   };
-      // });
     });
   },
   addStockToWatch: (symbol, alertPrice, name) => {
@@ -95,8 +77,8 @@ export const useStockStore = create<TStockStore>((set, get) => ({
             changePercent: 0,
             name,
             alertPrice,
-            //revisar si se puede poner el actual
             timestamp: 0,
+            initialPrice: 0,
           },
         },
       };

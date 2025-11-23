@@ -1,11 +1,12 @@
 import React, { memo } from 'react';
 import { useStockStore } from '../..';
-import { Paper, Typography } from '@mui/material';
-import { SingleStockChart } from './components';
+import { Paper, Typography, useTheme } from '@mui/material';
+import { StockChartComponent } from './components';
 import { Box } from '@mui/material';
 import { useShallow } from 'zustand/shallow';
 
-const StockChartsContainerContent: React.FC = () => {
+const StockChartsContainer: React.FC = () => {
+  const theme = useTheme();
   const stocksArray = useStockStore(
     useShallow((state) => Object.values(state.watchedStocks)),
   );
@@ -20,10 +21,11 @@ const StockChartsContainerContent: React.FC = () => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          bgcolor: theme.palette.background.paper,
         }}
       >
         <Typography variant="h6" color="text.secondary">
-          Agrega una acción para comenzar a ver su gráfico en tiempo real.
+          Add a symbol to start its graph
         </Typography>
       </Paper>
     );
@@ -35,7 +37,7 @@ const StockChartsContainerContent: React.FC = () => {
       sx={{
         p: 2,
         height: '100%',
-        bgcolor: 'rgb(31 41 55)',
+        bgcolor: theme.palette.background.paper,
         overflowY: 'auto',
       }}
     >
@@ -45,16 +47,16 @@ const StockChartsContainerContent: React.FC = () => {
         gutterBottom
         sx={{ color: 'white' }}
       >
-        Gráficos en Tiempo Real ({stocksArray.length})
+        Real Time Graphs ({stocksArray.length})
       </Typography>
 
       <Box>
         {stocksArray.map((stock) => (
-          <SingleStockChart key={stock.symbol} stock={stock} />
+          <StockChartComponent key={stock.symbol} {...stock} />
         ))}
       </Box>
     </Paper>
   );
 };
 
-export const StockChartsContainer = memo(StockChartsContainerContent);
+export const StockChartsComponent = memo(StockChartsContainer);

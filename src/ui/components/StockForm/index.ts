@@ -1,1 +1,1 @@
-export * from './StockForm';
+export * from './StockFormComponent';
