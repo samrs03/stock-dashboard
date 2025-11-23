@@ -5,7 +5,7 @@ import './index.css';
 import App from './App';
 import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
-import { customTheme, store } from './ui';
+import { customTheme, useStockStore } from './ui';
 
 // fonts
 
@@ -15,7 +15,7 @@ if (!rootElement) {
   throw new Error('Failed to initialized root element');
 }
 
-store.initializeStore();
+useStockStore.getState().initializeStore();
 
 createRoot(rootElement).render(
   <React.StrictMode>

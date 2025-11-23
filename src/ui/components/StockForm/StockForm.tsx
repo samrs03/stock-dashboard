@@ -9,7 +9,7 @@ import {
   Button,
 } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
-import { IWatchedStock, STOCK_ELEMENTS, store } from '../../store';
+import { IWatchedStock, STOCK_ELEMENTS, useStockStore } from '../../store';
 import AddIcon from '@mui/icons-material/Add';
 
 export type TStockForm = Pick<IWatchedStock, 'symbol' | 'alertPrice' | 'name'>;
@@ -28,6 +28,8 @@ export const StockForm: React.FC = () => {
     },
   });
 
+  const addStock = useStockStore((state) => state.addStockToWatch);
+
   const onSubmit = (data: TStockForm) => {
     const { symbol, alertPrice } = data;
 
@@ -37,7 +39,7 @@ export const StockForm: React.FC = () => {
       (element) => element.symbol === symbol,
     )!.name;
 
-    store.addStockToWatch(symbol, alertPrice, name);
+    addStock(symbol, alertPrice, name);
 
     // should i reset ?
 

@@ -1,7 +1,6 @@
 import { Box, Container, Grid, Typography } from '@mui/material';
-import { useState } from 'react';
 import './App.css';
-import { StockForm } from './ui';
+import { StockForm, StockChartsContainer } from './ui';
 
 function App() {
   return (
@@ -21,9 +20,7 @@ function App() {
         </Grid> */}
         <Grid container spacing={3} sx={{ height: '75vh' }}>
           <Grid component={StockForm} />
-          {/* <Grid item xs={12} md={8}>
-            <ChartDisplay />
-          </Grid> */}
+          <Grid component={StockChartsContainer} />
         </Grid>
       </Container>
     </Box>

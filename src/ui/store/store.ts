@@ -9,7 +9,7 @@ const INITIAL_STATE: IStockState = {
   chartSymbols: [],
 };
 
-export const store = create<TStockStore>((set, get) => ({
+export const useStockStore = create<TStockStore>((set, get) => ({
   ...INITIAL_STATE,
   initializeStore: () => {
     const updateStockMethod = get().updateStockPrice;
@@ -86,7 +86,6 @@ export const store = create<TStockStore>((set, get) => ({
 
     set((state) => {
       const watchedStocks = state.watchedStocks;
-
       return {
         watchedStocks: {
           ...watchedStocks,
@@ -117,4 +116,4 @@ export const store = create<TStockStore>((set, get) => ({
       };
     });
   },
-})).getState();
+}));
