@@ -79,7 +79,7 @@ export const store = create<TStockStore>((set, get) => ({
       // });
     });
   },
-  addStockToWatch: (symbol, alertPrice) => {
+  addStockToWatch: (symbol, alertPrice, name) => {
     console.warn('Adding stock to watched listed in ZUSTAND');
 
     handleSubscriptionEvent('subscribe', symbol);
@@ -94,6 +94,7 @@ export const store = create<TStockStore>((set, get) => ({
             symbol,
             price: 0,
             changePercent: 0,
+            name,
             alertPrice,
             //revisar si se puede poner el actual
             timestamp: 0,

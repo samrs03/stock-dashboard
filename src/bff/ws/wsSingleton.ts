@@ -37,6 +37,7 @@ export const initializeWs = (
   };
 
   ws.onmessage = (event) => {
+    console.log(event);
     if (event.type === 'trade' && event.data) {
       const parsedEvent = JSON.parse(event.data);
       const data = webSocketDataMapper(parsedEvent);

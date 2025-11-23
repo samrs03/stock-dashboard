@@ -7,6 +7,8 @@ import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
 import { customTheme, store } from './ui';
 
+// fonts
+
 const rootElement = document.getElementById('root');
 
 if (!rootElement) {

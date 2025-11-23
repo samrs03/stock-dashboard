@@ -4,12 +4,10 @@ export interface IStock {
   timestamp: number;
 }
 
-export interface IWatchedStock {
-  symbol: string;
-  price: number;
+export interface IWatchedStock extends IStock {
   changePercent: number;
   alertPrice: number;
-  timestamp: number;
+  name: string;
 }
 
 export enum EWsStatus {
@@ -25,7 +23,7 @@ export interface IStockState {
 }
 
 export interface IStockAction {
-  addStockToWatch: (symbol: string, alertPrice: number) => void;
+  addStockToWatch: (symbol: string, alertPrice: number, name: string) => void;
   removeStockFromWatch: (symbol: string) => void;
   setWsStatus: (status: EWsStatus) => void;
   updateStockPrice: (data: Map<string, IStock>) => void;
