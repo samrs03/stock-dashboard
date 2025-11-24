@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, memo } from 'react';
 import { Typography, Box } from '@mui/material';
-import Chart from 'chart.js/auto';
+import { Chart } from 'chart.js/auto';
 import { IWatchedStock } from '../../../store';
 
 const StockChartContainer: React.FC<IWatchedStock> = ({
