@@ -1,6 +1,5 @@
 import { IMesasgeEvent } from '../bff';
 import { IStock } from '../ui';
-import localforage from 'localforage';
 import { IWatchedStock } from '../ui';
 
 export const calculateChangePercent = (
@@ -45,42 +44,16 @@ export const webSocketDataMapper = (
   return stockInformation;
 };
 
-const stockCache = localforage.createInstance({
-  name: 'StockDataCache',
-  storeName: 'watched_stock_data',
-  description: 'Stores complete IWatchedStock objects for quick PWA restart.',
-});
-
-export const saveWatchedStock = async (stock: IWatchedStock): Promise<void> => {
-  try {
-    await stockCache.setItem(stock.symbol, stock);
-    console.warn(`Cache: Persisted data for ${stock.symbol}`);
-  } catch (error) {
-    throw error;
-  }
+export const saveWatchedStock = (
+  stock: Record<string, IWatchedStock>,
+): void => {
+  localStorage.setItem('stock_data', JSON.stringify(stock));
+  console.warn(`Cache: Persisted data for ${stock.symbol}`);
 };
 
-export const getAllWatchedStocks = async (): Promise<
-  Record<string, IWatchedStock>
-> => {
-  try {
-    const keys = await stockCache.keys();
-    const allStocks: Record<string, IWatchedStock> = {};
+export const getAllWatchedStocks = (): Record<string, IWatchedStock> => {
+  const serializedState = localStorage.getItem('stock_data');
 
-    for (const key of keys) {
-      const stock = await stockCache.getItem<IWatchedStock>(key);
-
-      if (stock) {
-        allStocks[key] = stock;
-      }
-    }
-    if (Object.keys(allStocks).length > 0) {
-      console.warn(
-        `Data cache length retrieved from local storage ${Object.keys(allStocks).length}`,
-      );
-    }
-    return allStocks;
-  } catch (error) {
-    throw error;
-  }
+  const watchedStocks = JSON.parse(serializedState!);
+  return watchedStocks;
 };

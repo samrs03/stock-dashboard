@@ -20,7 +20,6 @@ export enum EWsStatus {
 export interface IStockState {
   watchedStocks: Record<string, IWatchedStock>;
   wsStatus: EWsStatus;
-  chartSymbols: string[];
 }
 
 export interface IStockAction {

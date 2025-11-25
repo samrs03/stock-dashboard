@@ -1,7 +1,7 @@
 {
   "name": "PWA Stock Tracker",
   "short_name": "Stock PWA",
-  "description": "Dashboard de Trading en Tiempo Real",
+  "description": "Dashboard For Stocks",
   "start_url": ".",
   "display": "standalone",
   "orientation": "portrait",

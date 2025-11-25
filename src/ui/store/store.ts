@@ -10,7 +10,6 @@ import { handleSubscriptionEvent } from '../../bff';
 const INITIAL_STATE: IStockState = {
   wsStatus: EWsStatus.DISCONNECTED,
   watchedStocks: {},
-  chartSymbols: [],
 };
 
 export const useStockStore = create<TStockStore>((set, get) => ({
@@ -49,7 +48,7 @@ export const useStockStore = create<TStockStore>((set, get) => ({
               : existingStock.initialPrice,
         };
         watchedStocks[symbol] = updatedStock;
-        saveWatchedStock(updatedStock);
+        saveWatchedStock(watchedStocks);
       }
       return { watchedStocks };
     });
@@ -62,13 +61,16 @@ export const useStockStore = create<TStockStore>((set, get) => ({
     set((state) => {
       const watchedStocks = state.watchedStocks;
       saveWatchedStock({
-        symbol,
-        price: 0,
-        changePercent: 0,
-        name,
-        alertPrice,
-        timestamp: 0,
-        initialPrice: 0,
+        ...watchedStocks,
+        [symbol]: {
+          symbol,
+          price: 0,
+          changePercent: 0,
+          name,
+          alertPrice,
+          timestamp: 0,
+          initialPrice: 0,
+        },
       });
       return {
         watchedStocks: {

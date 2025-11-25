@@ -15,10 +15,5 @@ export const useWsLifecycle = () => {
     console.warn('WS Manager: Running Connection and Final Cleanup Effect');
 
     setupWebSocket();
-
-    return () => {
-      console.warn('WS Manager: Final Cleanup - Closing connection.');
-      closeWs();
-    };
   }, [setupWebSocket]);
 };
