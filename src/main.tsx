@@ -5,9 +5,7 @@ import './index.css';
 import App from './App';
 import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
-import { customTheme, useStockStore } from './ui';
-
-// fonts
+import { customTheme } from './ui';
 
 const rootElement = document.getElementById('root');
 
@@ -15,12 +13,10 @@ if (!rootElement) {
   throw new Error('Failed to initialized root element');
 }
 
-useStockStore.getState().initializeStore();
-
 createRoot(rootElement).render(
   <React.StrictMode>
     <ThemeProvider theme={customTheme}>
-      <CssBaseline /> {/* Mínimo CSS para MUI */}
+      <CssBaseline />
       <App />
     </ThemeProvider>
   </React.StrictMode>,

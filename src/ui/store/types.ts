@@ -25,10 +25,9 @@ export interface IStockState {
 
 export interface IStockAction {
   addStockToWatch: (symbol: string, alertPrice: number, name: string) => void;
-  removeStockFromWatch: (symbol: string) => void;
   setWsStatus: (status: EWsStatus) => void;
   updateStockPrice: (data: Map<string, IStock>) => void;
-  initializeStore: () => void;
+  loadCachedData: () => void;
 }
 
 export type TStockStore = IStockState & IStockAction;

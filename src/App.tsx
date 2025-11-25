@@ -1,13 +1,16 @@
 import React from 'react';
-import { Box, AppBar, Typography, useTheme } from '@mui/material';
+import { Box, AppBar, useTheme } from '@mui/material';
 import {
   StockChartsComponent,
   StockFormComponent,
   TopCardsComponent,
 } from './ui';
+import { useWsLifecycle } from './bff';
 
 const App = () => {
   const theme = useTheme();
+
+  useWsLifecycle();
 
   return (
     <Box

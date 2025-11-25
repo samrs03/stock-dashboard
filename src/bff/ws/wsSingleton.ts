@@ -1,20 +1,40 @@
 import { EWsStatus, IStock } from '../../ui';
 import { webSocketDataMapper } from '../../utils';
 
-// volver a revisar variables de ambiente
-
 export type WsUpdateCallback = (data: Map<string, IStock>) => void;
 export type StatusUpdateCallback = (status: EWsStatus) => void;
+export type LoadWatchedStocksCallback = () => void;
 
 let ws: WebSocket | null = null;
 let updateCallback: WsUpdateCallback | null = null;
 let statusCallback: StatusUpdateCallback | null = null;
+let loadWatchedStocksCallback: LoadWatchedStocksCallback | null = null;
+let isConnecting: boolean = false;
 
 export const initializeWs = (
   onUpdate: WsUpdateCallback,
   onStatusChange: StatusUpdateCallback,
+  onLoadWatchedStocks: LoadWatchedStocksCallback,
 ): void => {
-  if (ws) return;
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    updateCallback = onUpdate;
+    statusCallback = onStatusChange;
+    loadWatchedStocksCallback = onLoadWatchedStocks;
+    return;
+  }
+
+  if (isConnecting) {
+    return;
+  }
+
+  if (
+    ws &&
+    (ws.readyState === WebSocket.CLOSING || ws.readyState === WebSocket.CLOSED)
+  ) {
+    closeWs();
+  }
+
+  isConnecting = true;
 
   const wsUrl =
     'wss://ws.finnhub.io?token=d4g7gchr01qm5b349gt0d4g7gchr01qm5b349gtg';
@@ -23,16 +43,24 @@ export const initializeWs = (
 
   updateCallback = onUpdate;
   statusCallback = onStatusChange;
+  loadWatchedStocksCallback = onLoadWatchedStocks;
 
   ws.onopen = () => {
+    isConnecting = false;
     statusCallback && statusCallback(EWsStatus.CONNECTED);
+
+    if (loadWatchedStocksCallback) {
+      loadWatchedStocksCallback();
+    }
   };
 
   ws.onclose = () => {
+    isConnecting = false;
     statusCallback && statusCallback(EWsStatus.DISCONNECTED);
   };
 
   ws.onerror = () => {
+    isConnecting = false;
     statusCallback && statusCallback(EWsStatus.ERROR);
   };
 
@@ -56,8 +84,18 @@ export const handleSubscriptionEvent = (
 };
 
 export const closeWs = () => {
-  if (ws && ws.readyState === WebSocket.OPEN) {
-    ws.close();
-    ws = null;
+  if (ws && ws.readyState !== WebSocket.CLOSED) {
+    if (
+      ws.readyState === WebSocket.OPEN ||
+      ws.readyState === WebSocket.CONNECTING
+    ) {
+      ws.close(1000, 'App cleanup/unmount');
+    }
   }
+
+  ws = null;
+  updateCallback = null;
+  statusCallback = null;
+  loadWatchedStocksCallback = null;
+  isConnecting = false;
 };
